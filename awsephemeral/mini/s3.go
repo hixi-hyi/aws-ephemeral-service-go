@@ -36,7 +36,7 @@ func S3BucketExists(sess *session.Session, bucket string) (bool, error) {
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
-			case s3.ErrCodeNoSuchBucket:
+			case s3.ErrCodeNoSuchBucket, "NotFound":
 				return false, nil
 			}
 		}

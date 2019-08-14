@@ -10,7 +10,7 @@ import (
 )
 
 func TestCreateS3Bucket(t *testing.T) {
-	t.Run("simply", func(t *testing.T) {
+	t.Run("mini", func(t *testing.T) {
 		ls := localstack.NewLocalStack()
 		awsclient.UseLocalStack(ls)
 		sess := session.Must(session.NewSession())

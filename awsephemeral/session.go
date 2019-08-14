@@ -1,7 +1,5 @@
 package awsephemeral
 
-type Chain func() error
-
 type Session struct {
 	Defers []Chain
 }
@@ -10,22 +8,30 @@ func NewSession() *Session {
 	return &Session{}
 }
 
-func (m *Session) Teardown() func() {
+func New() (*Session, func()) {
+	m := &Session{}
+	return m, m.Defer()
+}
+
+func (m *Session) Defer() func() {
 	return func() {
-		var errs []error
-		for _, f := range m.Defers {
-			errs = append(errs, f())
-		}
-		if len(errs) != 0 {
-			panic(errs)
-		}
+		m.Teardown()
 	}
 }
 
-func (m *Session) Add(f Chain, err error) error {
-	if err != nil {
-		return err
+func (m *Session) Teardown() {
+	var errs []error
+	for _, f := range m.Defers {
+		err := f()
+		if err != nil {
+			errs = append(errs, err)
+		}
 	}
+	if len(errs) != 0 {
+		panic(errs)
+	}
+}
+
+func (m *Session) Add(f Chain) {
 	m.Defers = append(m.Defers, f)
-	return nil
 }
