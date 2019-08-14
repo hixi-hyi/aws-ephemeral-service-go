@@ -20,7 +20,7 @@ func TestCreateS3Bucket(t *testing.T) {
 		if exists, _ := awsephservice.S3BucketExists(sess, bucket); exists == true {
 			t.Errorf("bucket already exists")
 		}
-		teardown, err := awsephservice.S3BucketCreate(sess, bucket)
+		_, teardown, err := awsephservice.S3BucketCreate(sess, bucket)
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -23,7 +23,7 @@ func TestSession(t *testing.T) {
 		func() {
 			ephemeralSession, teardown := awseph.NewScopedSession(sess)
 			defer teardown()
-            ephemeralSession.S3BucketMustCreate(bucket)
+			_ = ephemeralSession.S3BucketMustCreate(bucket)
 			assert.Equal(t, true, awseph.MustExists(awsephservice.S3BucketExists(sess, bucket)))
 		}()
 		assert.Equal(t, false, awseph.MustExists(awsephservice.S3BucketExists(sess, bucket)))
@@ -39,7 +39,7 @@ func TestSession(t *testing.T) {
 		func() {
 			ephemeralSession, teardown := awseph.NewScopedSession(sess)
 			defer teardown()
-			ephemeralSession.AddService(awseph.MustCreate(awsephservice.S3BucketCreate(sess, bucket)))
+			ephemeralSession.AddService(awsephservice.S3BucketCreate(sess, bucket))
 			assert.Equal(t, true, awseph.MustExists(awsephservice.S3BucketExists(sess, bucket)))
 		}()
 		assert.Equal(t, false, awseph.MustExists(awsephservice.S3BucketExists(sess, bucket)))

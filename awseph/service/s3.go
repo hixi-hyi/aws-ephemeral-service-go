@@ -8,15 +8,15 @@ import (
 )
 
 // func S3BucketCreateFull(sess *session.Session, input *s3.BucketCreateInput) (func() error, error)
-func S3BucketCreate(sess *session.Session, bucket string) (func() error, error) {
+func S3BucketCreate(sess *session.Session, bucket string) (*s3.CreateBucketOutput, func() error, error) {
 	input := &s3.CreateBucketInput{}
 	input.SetBucket(bucket)
 	svc := awsclient.S3(sess)
-	_, err := svc.CreateBucket(input)
+	ret, err := svc.CreateBucket(input)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return func() error {
+    f := func() error {
 		input := &s3.DeleteBucketInput{}
 		input.SetBucket(bucket)
 		svc := awsclient.S3(sess)
@@ -25,7 +25,8 @@ func S3BucketCreate(sess *session.Session, bucket string) (func() error, error) 
 			return err
 		}
 		return nil
-	}, nil
+	}
+	return ret, f, nil
 }
 
 func S3BucketExists(sess *session.Session, bucket string) (bool, error) {

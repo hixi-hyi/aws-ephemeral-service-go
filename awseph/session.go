@@ -1,6 +1,7 @@
 package awseph
 
 import (
+	"github.com/aws/aws-sdk-go/service/s3"
     "github.com/aws/aws-sdk-go/aws/session"
     awsephservice "github.com/hixi-hyi/aws-ephemeral-service-go/awseph/service"
 )
@@ -41,10 +42,17 @@ func (m *Session) Teardown() {
 	}
 }
 
-func (m *Session) AddService(f func() error) {
+func (m *Session) AddService(i interface{}, f func() error, err error) interface{} {
+
+    if err != nil {
+        panic(err)
+    }
 	m.Defers = append(m.Defers, f)
+    return i
 }
 
-func (m *Session) S3BucketMustCreate(bucket string) {
-	m.AddService(MustCreate(awsephservice.S3BucketCreate(m.AwsSession, bucket)))
+func (m *Session) S3BucketMustCreate(bucket string) *s3.CreateBucketOutput{
+    ret, f, err :=  awsephservice.S3BucketCreate(m.AwsSession, bucket)
+    m.AddService(ret, f, err)
+    return ret
 }
