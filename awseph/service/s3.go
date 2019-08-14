@@ -16,15 +16,12 @@ func S3BucketCreate(sess *session.Session, bucket string) (*s3.CreateBucketOutpu
 	if err != nil {
 		return nil, nil, err
 	}
-    f := func() error {
+	f := func() error {
 		input := &s3.DeleteBucketInput{}
 		input.SetBucket(bucket)
 		svc := awsclient.S3(sess)
 		_, err := svc.DeleteBucket(input)
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	}
 	return ret, f, nil
 }

@@ -9,13 +9,13 @@ import (
 	"github.com/hixi-hyi/localstack-go/localstack"
 )
 
-func TestS3QueueCreate(t *testing.T) {
+func TestSqsQueueCreate(t *testing.T) {
 	t.Run("simple", func(t *testing.T) {
 		ls := localstack.NewLocalStack()
 		awsclient.UseLocalStack(ls)
 		sess := session.Must(session.NewSession())
-		createFunc := awsephservice.S3BucketCreate
-		existsFunc := awsephservice.S3BucketExists
+		createFunc := awsephservice.SqsQueueCreate
+		existsFunc := awsephservice.SqsQueueExists
 
 		name := "awsephemeral"
 
@@ -35,4 +35,3 @@ func TestS3QueueCreate(t *testing.T) {
 		}
 	})
 }
-
