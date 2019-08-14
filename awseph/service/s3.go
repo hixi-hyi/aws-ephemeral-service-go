@@ -1,14 +1,14 @@
-package mini
+package awsephservice
 
 import (
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/hixi-hyi/aws-client-go/awsclient"
-	"github.com/hixi-hyi/aws-ephemeral-service-go/awsephemeral"
 )
 
-func S3BucketCreate(sess *session.Session, bucket string) (awsephemeral.Chain, error) {
+// func S3BucketCreateFull(sess *session.Session, input *s3.BucketCreateInput) (func() error, error)
+func S3BucketCreate(sess *session.Session, bucket string) (func() error, error) {
 	input := &s3.CreateBucketInput{}
 	input.SetBucket(bucket)
 	svc := awsclient.S3(sess)

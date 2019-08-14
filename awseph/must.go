@@ -1,8 +1,6 @@
-package awsephemeral
+package awseph
 
-type Chain func() error
-
-func MustCreate(f Chain, err error) Chain {
+func MustCreate(f func() error, err error) func() error {
 	if err != nil {
 		panic(err)
 	}
