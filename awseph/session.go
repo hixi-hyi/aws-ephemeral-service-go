@@ -1,11 +1,11 @@
 package awseph
 
 import (
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-    "github.com/aws/aws-sdk-go/aws/session"
-    awsephservice "github.com/hixi-hyi/aws-ephemeral-service-go/awseph/service"
+	"github.com/aws/aws-sdk-go/service/sqs"
+	awsephservice "github.com/hixi-hyi/aws-ephemeral-service-go/awseph/service"
 )
-
 
 type Session struct {
 	AwsSession *session.Session
@@ -44,15 +44,27 @@ func (m *Session) Teardown() {
 
 func (m *Session) AddService(i interface{}, f func() error, err error) interface{} {
 
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 	m.Defers = append(m.Defers, f)
-    return i
+	return i
 }
 
-func (m *Session) S3BucketMustCreate(bucket string) *s3.CreateBucketOutput{
-    ret, f, err :=  awsephservice.S3BucketCreate(m.AwsSession, bucket)
-    m.AddService(ret, f, err)
-    return ret
+func (m *Session) S3BucketMustCreate(name string) *s3.CreateBucketOutput {
+	ret, f, err := awsephservice.S3BucketCreate(m.AwsSession, name)
+	m.AddService(nil, f, err)
+	return ret
+}
+
+func (m *Session) SQSQueueMustCreate(name string) *sqs.CreateQueueOutput {
+	ret, f, err := awsephservice.SQSQueueCreate(m.AwsSession, name)
+	m.AddService(nil, f, err)
+	return ret
+}
+
+func (m *Session) DynamoDBTableMustCreateByDynamo(name string, from interface{}) {
+	_, f, err := awsephservice.DynamoDBTableCreateByDynamo(m.AwsSession, name, from)
+	m.AddService(nil, f, err)
+	return
 }

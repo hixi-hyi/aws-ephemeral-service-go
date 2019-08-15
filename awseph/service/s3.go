@@ -8,6 +8,10 @@ import (
 )
 
 // func S3BucketCreateFull(sess *session.Session, input *s3.BucketCreateInput) (func() error, error)
+
+/*
+Notice: the method can not delete bucket if bucket has objects.
+*/
 func S3BucketCreate(sess *session.Session, bucket string) (*s3.CreateBucketOutput, func() error, error) {
 	input := &s3.CreateBucketInput{}
 	input.SetBucket(bucket)
