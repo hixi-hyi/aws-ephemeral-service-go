@@ -1,8 +1,6 @@
 package awseph
 
 import (
-	"fmt"
-
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/sqs"
@@ -40,7 +38,11 @@ func (m *Session) Teardown() {
 		}
 	}
 	if len(errs) != 0 {
-		panic(fmt.Sprintf("%#v", errs))
+		var msg string
+		for _, e := range errs {
+			msg += e.Error() + "\n"
+		}
+		panic(msg)
 	}
 }
 
