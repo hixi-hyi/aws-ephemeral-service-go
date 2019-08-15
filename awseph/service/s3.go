@@ -1,11 +1,14 @@
 package awsephservice
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/hixi-hyi/aws-client-go/awsclient"
 )
+
+var S3BucketForceDelete = false
 
 // func S3BucketCreateFull(sess *session.Session, input *s3.BucketCreateInput) (func() error, error)
 
@@ -21,6 +24,30 @@ func S3BucketCreate(sess *session.Session, bucket string) (*s3.CreateBucketOutpu
 		return nil, nil, err
 	}
 	f := func() error {
+		if S3BucketForceDelete {
+			svc := awsclient.S3(sess)
+			input := &s3.ListObjectsInput{}
+			input.SetBucket(bucket)
+			ret, err := svc.ListObjects(input)
+			if err != nil {
+				return err
+			}
+			for _, item := range ret.Contents {
+				input := &s3.DeleteObjectInput{}
+				input.SetBucket(bucket)
+				input.SetKey(aws.StringValue(item.Key))
+				_, err := svc.DeleteObject(input)
+				if err != nil {
+					return err
+				}
+			}
+
+			//iter := s3manager.NewDeleteListIterator(svc, input)
+			//if err := s3manager.NewBatchDeleteWithClient(svc).Delete(aws.BackgroundContext(), iter); err != nil {
+			//	fmt.Printf("Unable to delete objects from bucket %q, %v", bucket, err)
+			//	return err
+			//}
+		}
 		input := &s3.DeleteBucketInput{}
 		input.SetBucket(bucket)
 		svc := awsclient.S3(sess)
