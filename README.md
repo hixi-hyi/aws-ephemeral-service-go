@@ -14,13 +14,14 @@ func TestMain() {
 
     name := "ephemeral"
 
-	ephemeralSession, teardown := awseph.NewScopedSession(sess)
+    ephSession, teardown := awseph.NewScopedSession(sess)
     defer teardown()
 
-    ephemeralSession.S3BucketMustCreate(name)
+    awsephservice.S3BucketForceDelete = true
+    ephSession.S3BucketMustCreate(name)
     // write the test code for s3
 
-    ephemeralSession.SQSQueueMustCreate(name)
+    ephSession.SQSQueueMustCreate(name)
     // write the test code for sqs
 }
 ```
