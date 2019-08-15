@@ -26,5 +26,5 @@ func TestMain() {
 ```
 
 ### Services
-* [session](./blob/master/awseph/session.go)
-* [service](./tree/master/awseph/service)
+* [session](./awseph/session.go)
+* [service](./awseph/service)
