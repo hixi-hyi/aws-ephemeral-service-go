@@ -8,7 +8,7 @@ import (
 	"github.com/hixi-hyi/aws-client-go/awsclient"
 )
 
-func SqsQueueCreate(sess *session.Session, queue string) (*sqs.CreateQueueOutput, func() error, error) {
+func SQSQueueCreate(sess *session.Session, queue string) (*sqs.CreateQueueOutput, func() error, error) {
 	input := &sqs.CreateQueueInput{}
 	input.SetQueueName(queue)
 	svc := awsclient.SQS(sess)
@@ -26,7 +26,7 @@ func SqsQueueCreate(sess *session.Session, queue string) (*sqs.CreateQueueOutput
 	return ret, f, nil
 }
 
-func SqsQueueExists(sess *session.Session, queue string) (bool, error) {
+func SQSQueueExists(sess *session.Session, queue string) (bool, error) {
 	input := &sqs.GetQueueUrlInput{}
 	input.SetQueueName(queue)
 	_, err := awsclient.SQS(sess).GetQueueUrl(input)
